@@ -183,3 +183,25 @@ class JSONSaver:
 
         with open('photos_data.json', 'w', encoding='utf-8') as f:
             json.dump(photos_lst, f, indent=2, ensure_ascii=False)
+
+
+
+# Токены для VK и Яндекс.Диска
+config = configparser.ConfigParser()  # создаём объекта парсера
+config.read("settings.ini") # читаем конфиг
+TOKEN_VK = config['Token']['vk_token'].strip('"')
+TOKEN_YD = config['Token']['yd_token'].strip('"')
+
+USER_ID = input("Введите User id: ")
+
+# Создание экземпляров классов
+vk_client = VKAPIClient(TOKEN_VK, USER_ID)
+yd_client = YD(TOKEN_YD)
+
+# Создание папки и загрузка фото
+yd_client.create_folder('vk_client_photo')
+yd_client.save_and_upload_photos_to_yd()
+
+# Сохранение информации о фото в JSON
+json_saver = JSONSaver()
+json_saver.save_info()
