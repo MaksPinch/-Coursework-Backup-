@@ -119,6 +119,18 @@ class YD:
         """
         self.token = token
 
+    def create_folder(self, folder_name: str) -> None:
+        """
+        Создает папку на Яндекс.Диске для хранения фотографий.
+
+        :param folder_name: str - Название создаваемой папки.
+        """
+        yd_url_create_folder = f"{self.YD_URL}/v1/disk/resources"
+        params = {'path': folder_name}
+        headers = {'Authorization': f'OAuth {self.token}'}
+
+        response = requests.put(yd_url_create_folder, params=params, headers=headers)
+
 
 
 
