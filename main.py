@@ -168,3 +168,18 @@ class JSONSaver:
     """
     Класс для сохранения информации о фотографиях в JSON-файл.
     """
+
+    def save_info(self) -> None:
+        """
+        Сохраняет данные о фотографиях в JSON-файл 'photos_data.json'.
+
+        :return: None
+        """
+        photos_lst = vk_client.get_largest_photo()
+
+        if not photos_lst:
+            print("Фотографии не найдены или произошла ошибка.")
+
+
+        with open('photos_data.json', 'w', encoding='utf-8') as f:
+            json.dump(photos_lst, f, indent=2, ensure_ascii=False)
