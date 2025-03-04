@@ -131,7 +131,37 @@ class YD:
 
         response = requests.put(yd_url_create_folder, params=params, headers=headers)
 
+    def save_and_upload_photos_to_yd(self) -> None:
+        """
+        Загружает 5 самых популярных фотографий из VK и сохраняет их на Яндекс.Диске.
 
+        :return: None
+        """
+        photos_lst = vk_client.get_largest_photo()
+
+        if not photos_lst:
+            print("Фотографии не найдены или произошла ошибка.")
+
+        for photo in tqdm(photos_lst, desc='Загрузка фотографий', ncols=100, unit='шаг'):
+            url = photo['url']
+            likes = photo['likes']
+            date = photo['date']
+            filename = f'vk_client_photo_{likes}_{date}.jpg'
+
+            response = requests.get(url)
+
+            with open(filename, 'wb') as f:
+                f.write(response.content)
+
+            yd_url_get_uplink = f'{self.YD_URL}/v1/disk/resources/upload'
+            params = {'path': f'vk_client_photo/{filename}'}
+            headers = {'Authorization': f'OAuth {self.token}'}
+            response = requests.get(yd_url_get_uplink, params=params, headers=headers)
+
+            url_upload = response.json()['href']
+
+            with open(filename, 'rb') as f:
+                response = requests.put(url_upload, files={'file': f})
 
 
 class JSONSaver:
